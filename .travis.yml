@@ -1,7 +1,15 @@
 language: node_js
 build:
+  pre_ci:
+    - echo "This is pre_ci, running on build machine"
+  ci:
+    - echo "This is ci, running on container"
   post_ci:
     - npm run coverage && cat ./coverage/lcov.info | coveralls
+  on_success:
+    - echo 'build passed'
+  on_failure:
+   - echo 'build failed'
 node_js:
   - "0.10"
   - "0.12"
