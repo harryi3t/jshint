@@ -4,6 +4,14 @@ build:
     - echo "This is pre_ci, running on build machine"
   ci:
     - echo "This is ci, running on container"
+    - mkdir -p shippable/testresults
+    - mkdir -p shippable/codecoverage
+    - npm install
+    - ./node_modules/.bin/istanbul cover grunt -- -u tdd
+    - ./node_modules/.bin/istanbul report cobertura --dir  shippable/codecoverage/
+    - cat shippable/codecoverage/cobertura-coverage.xml
+    - export XUNIT_FILE=shippable/testresults/result.xml
+    - grunt
   post_ci:
     - npm run coverage && cat ./coverage/lcov.info | coveralls
   on_success:
@@ -13,5 +21,3 @@ build:
 node_js:
   - "0.10"
   - "0.12"
-matrix:
-  fast_finish: true
